@@ -1,0 +1,13 @@
+[Unit]
+Description=Alfresco {{springboot_application.service_name}} service
+After=network.target
+
+[Service]
+WorkingDirectory={{springboot_application.home}}
+SyslogIdentifier={{springboot_application.service_name}}
+ExecStart=/bin/sh -c "exec java -Dspring.profiles.active={{environment_name}} -Dspring.config.location=file:./app.yml -Dspring.cloud.bootstrap.location=file:./bootstrap.yml -Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8 -jar ./app.jar"
+User={{springboot_application.user}}
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

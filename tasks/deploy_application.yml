@@ -1,0 +1,35 @@
+- debug:
+    msg: "environment: {{environment_name}}: Deploying application to the target machine"
+
+- name: Create an application directory if it does not exist
+  file:
+    path: "{{springboot_application.home}}"
+    state: directory
+    owner: "{{springboot_application.user}}"    
+    group: "{{springboot_application.group}}"
+    mode: '0755'
+    
+- name: Copy springboot_application 
+  copy: 
+    src:  "{{springboot_application_app_source}}"
+    dest: "{{springboot_application.home}}/"
+    owner: "{{springboot_application.user}}"    
+    group: "{{springboot_application.group}}"
+     
+- name: Create app.yml
+  template: 
+    src: app.yml.j2
+    dest: "{{springboot_application.home}}/app.yml"
+    owner: "{{springboot_application.user}}"
+    group: "{{springboot_application.group}}"
+    mode: '0755'
+    
+- name: Create bootstrap.yml
+  template: 
+    src: bootstrap.yml.j2
+    dest: "{{springboot_application.home}}/bootstrap.yml"
+    owner: "{{springboot_application.user}}"
+    group: "{{springboot_application.group}}"
+    mode: '0755'
+
+

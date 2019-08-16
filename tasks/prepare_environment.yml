@@ -1,0 +1,30 @@
+- debug:
+    msg: "environment: {{environment_name}}: Prepearing environment"
+    
+- name: Add the group '"{{springboot_application.group}}"' 
+  group:
+    name: "{{springboot_application.group}}"
+    state: present
+    
+- name: Add the user '"{{springboot_application.user}}"' 
+  user:
+    name: "{{springboot_application.user}}"
+    shell: /bin/bash
+    groups: "{{springboot_application.group}}"
+    append: yes
+    
+- name: Create a log directory if it does not exist
+  file:
+    path: "{{springboot_application.log.home}}"
+    state: directory
+    owner: "{{springboot_application.user}}"
+    group: "{{springboot_application.group}}"
+    mode: '0755'
+
+- name: Open ports in iptables
+  iptables_raw:
+    name: open_springboot_application_ports
+    rules: "-A INPUT -p tcp -m state --state NEW -m multiport --dports {{springboot_application.port}} -j ACCEPT"
+  tags: iptables
+  become: yes
+

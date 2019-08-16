@@ -1,0 +1,15 @@
+- name: Prepare Environment
+  import_tasks: prepare_environment.yml
+
+- name: Import certs to java
+  import_tasks: trusted_ca_import.yml
+
+- name: Deploy application
+  import_tasks: deploy_application.yml
+
+- name: Configure application launcher
+  import_tasks: configure_launcher.yml
+
+
+
+

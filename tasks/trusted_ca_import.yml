@@ -1,0 +1,22 @@
+- debug:
+    msg: "environment: {{environment_name}}: installing JAVA cacerts"
+
+- name: Copy certs
+  copy:
+    src: "{{springboot_application.trusted_certs_source}}"
+    dest: "/etc/ssl/certs"
+
+- name: Get certificate files on remote machine
+  find:
+    paths: /etc/ssl/certs/common
+  register: cert_files
+
+- name: "Import SSL certificate {{(item.path|basename|splitext)[0]}} to a given cacerts keystore"
+  java_cert:
+    cert_alias: "{{(item.path|basename|splitext)[0]}}"
+    cert_path: "{{item.path}}"
+    keystore_path: "{{java.jre_home}}/lib/security/cacerts"
+    keystore_pass: "{{java.cacerts_password}}"
+    state: present
+  with_items: "{{cert_files.files}}"
+    

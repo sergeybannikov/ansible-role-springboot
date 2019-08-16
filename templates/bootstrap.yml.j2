@@ -1,0 +1,17 @@
+spring:
+  application.name: {{vault.springboot_application}}
+  cloud:
+    vault:
+      host: {{vault.host}}
+      port: {{vault.port}}
+      scheme: {{vault.scheme}}
+      authentication: {{vault.authentication}}
+      token:  {{vault.token}}
+      connection-timeout: {{vault.connection_timeout}}
+      read-timeout: {{vault.read_timeout}}
+      config:
+        order: -10
+      kv:
+         enabled: {{vault.kv_enabled}}
+         backend: secret
+         profile-separator: '/'

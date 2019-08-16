@@ -1,0 +1,47 @@
+home: /var/opt
+environment_name: "environment not defined"
+shared_files_source: /var/share
+
+java:
+    jre_home: /usr/java/default/jre
+    cacerts_password: changeit
+    
+keycloak:
+    url: https://example.com
+    realm: myRealm
+
+vault:
+    springboot_application: "com/example/services/myApp/api/{{environment_name}}"
+    host: "{{inventory_hostname}}"
+    port: 8201
+    scheme: http
+    authentication: TOKEN
+    token:  7aeb7239-a89f-4ee9-8fd4-718c6f8ac4a9
+    connection_timeout: 5000
+    read_timeout: 15000
+    kv_enabled: true
+
+springboot_application_secret: "{{ lookup('hashi_vault', 'secret=secret/{{vault.springboot_application}} token={{vault.token}} url={{vault.scheme}}://{{vault.host}}:{{vault.port}}') }}"
+
+springboot_application:
+    scheme: http
+    host: "{{inventory_hostname}}"
+    port: 80
+    files_source: "{{shared_files_source}}/{{environment_name}}"
+    trusted_certs_source: "{{shared_files_source}}/{{environment_name}}/ssl/trusted"
+    home: "{{home}}/springboot_application"
+    user: springboot_application
+    group: springboot_application
+    service_name: springboot_application
+    database:
+        host: "{{inventory_hostname}}"
+        port: 5432
+        name: springboot_application
+        user: "{{springboot_application_secret.spring.datasource.username}}"
+        password: "{{springboot_application_secret.spring.datasource.password}}"
+    log:
+        home: /var/log/springboot_application
+        
+
+springboot_application_app_source: "{{springboot_application.files_source}}/{{springboot_application.service_name}}/app/app.jar"  
+springboot_application_database_uri: "jdbc:postgresql://{{springboot_application.database.host}}:{{springboot_application.database.port}}/{{springboot_application.database.name}}"

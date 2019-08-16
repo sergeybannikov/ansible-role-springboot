@@ -1,0 +1,46 @@
+app:
+  security:
+    keycloak:
+      url: {{keycloak.url}}
+      realm: {{keycloak.realm}}
+
+    allowed-web-origins:
+      - "*"
+
+server:
+  port: {{springboot_application.port}}
+  
+spring:
+  mandatory-file-encoding: UTF-8
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: "{{springboot_application_database_uri}}"
+    username: "{{springboot_application.database.user}}"
+    password: "{{springboot_application.database.password}}"
+
+  flyway:
+    enabled: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate: INFO
+  path: {{springboot_application.log.home}}
+#  pattern:
+#    level: '%X{mdcData}%5p'
+
